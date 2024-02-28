@@ -12,9 +12,9 @@ DROP TABLE roast;
 DROP TABLE product_has_roast;
 DROP TABLE provider;
 DROP TABLE amount;
-DROP TABLE reference;
+DROP TABLE prod_reference;
 DROP TABLE provider_has_reference;
-DROP TABLE order;
+DROP TABLE provider_order;
 DROP TABLE payment_type;
 DROP TABLE credit_card;
 DROP TABLE contact_preference;
@@ -54,12 +54,11 @@ CREATE TABLE varietal
     name VARCHAR(45),
     coffea_name VARCHAR(45) NOT NULL, 
     CONSTRAINT varietal_pk PRIMARY KEY(name),
-    CONSTRAINT coffea_fk FOREIGN KEY (coffea_name) refences coffea(name)
+    CONSTRAINT coffea_fk FOREIGN KEY (coffea_name) references coffea(name)
 );
 
 CREATE TABLE product
 (
-
     name VARCHAR(45),
     varietal_name VARCHAR(45) NOT NULL,
     origin_name VARCHAR(45) NOT NULL,
@@ -96,7 +95,7 @@ CREATE TABLE product_has_roast
     roast_roast_type VARCHAR(45),
     product_name VARCHAR(45),
     CONSTRAINT product_has_roast_pk PRIMARY KEY(roast_roast_type, product_name),
-    CONSTRAINT product_fk FOREIGN KEY(product_name) references product(name),
+    CONSTRAINT product_roast_fk FOREIGN KEY(product_name) references product(name),
     CONSTRAINT roast_fk FOREIGN KEY(roast_roast_type) references roast(roast_type)
 );
 
@@ -125,18 +124,18 @@ CREATE TABLE amount
     format_format_type VARCHAR(45) NOT NULL,
     quantity NUMBER(15) NOT NULL,
     CONSTRAINT amount_pk PRIMARY KEY(format_format_type, quantity),
-    CONSTRAINT format_fk FOREIGN KEY(format_format_type) references format(format_type)
+    CONSTRAINT format_amount_fk FOREIGN KEY(format_format_type) references format(format_type)
 );
 
-CREATE TABLE reference
+CREATE TABLE prod_reference
 (
     price NUMBER(15),
     amount NUMBER(15),
     format_format_type VARCHAR2(45),
     barcode NUMBER(15),
     stock NUMBER(15) NOT NULL,
-    min NUMBER(15) NOT NULL,
-    max NUMBER(15) NOT NULL,
+    minim NUMBER(15) NOT NULL,
+    maxim NUMBER(15) NOT NULL,
     CONSTRAINT reference_pk PRIMARY KEY(price, amount, barcode),
     CONSTRAINT amount_fk FOREIGN KEY(amount, format_format_type) references amount(quantity, format_format_type),
     CONSTRAINT prod_fk FOREIGN KEY(barcode) references product(barcode)
@@ -151,10 +150,10 @@ CREATE TABLE provider_has_reference
     provider_CIF NUMBER(15) ,
     provider_reference_price NUMBER(15),
     CONSTRAINT provider_has_reference_pk PRIMARY KEY(price, amount, barcode, provider_CIF),
-    CONSTRAINT fk_reference FOREIGN KEY (price, amount, barcode) references reference(price, amount, barcode)
+    CONSTRAINT fk_provider_reference FOREIGN KEY(price, amount, barcode) references prod_reference(price, amount, barcode)
 );
 
-CREATE TABLE order
+CREATE TABLE provider_order
 (
     price NUMBER(15),
     amount NUMBER(15),
@@ -165,8 +164,8 @@ CREATE TABLE order
     fulfilled_date DATE,
     provider_CIF NUMBER(15),
     CONSTRAINT order_pk PRIMARY KEY(price, amount, barcode, order_date),
-    CONSTRAINT fk_reference FOREIGN KEY (price, amount, barcode) references REFERENCE(price, amount, barcode),
-    CONSTRAINT fk_provider FOREIGN KEY (provider_CIF) references PROVIDER(CIF)
+    CONSTRAINT fk_reference FOREIGN KEY(price, amount, barcode) references prod_reference(price, amount, barcode),
+    CONSTRAINT fk_provider FOREIGN KEY(provider_CIF) references PROVIDER(CIF)
 );
 
 CREATE TABLE payment_type
@@ -177,14 +176,15 @@ CREATE TABLE payment_type
 
 CREATE TABLE credit_card
 (
-    cardnum NUMBER(15) NOT NULL,
+    cardnum NUMBER(15),
     card_holder VARCHAR(45) NOT NULL,
     company_name VARCHAR(45) NOT NULL,
     expiration DATE NOT NULL,
     CONSTRAINT credit_card_pk PRIMARY KEY(cardnum)
 );
 
-CREATE TABLE contact_preference(
+CREATE TABLE contact_preference
+(
     type VARCHAR2(45),
     CONSTRAINT pk PRIMARY KEY(type)
 );
@@ -208,7 +208,7 @@ CREATE TABLE opinion
     endorsement NUMBER(15),
     username VARCHAR(45),
     CONSTRAINT opinion_pk PRIMARY KEY(text),
-    CONSTRAINT fk_registered_customer FOREIGN KEY (username) references REGISTERED_CUSTOMER(username)
+    CONSTRAINT fk_registered_customer FOREIGN KEY(username) references REGISTERED_CUSTOMER(username)
 );
 
 CREATE TABLE customer
@@ -219,7 +219,7 @@ CREATE TABLE customer
     buyer_surname VARCHAR(45) NOT NULL,
     username VARCHAR(45),
     CONSTRAINT customer_pk PRIMARY KEY(preferred_contact),
-    CONSTRAINT registered_customer_fk FOREIGN KEY(username)
+    CONSTRAINT registered_customer_fk FOREIGN KEY(username) references REGISTERED_CUSTOMER(username)
 );
 
 
@@ -236,15 +236,15 @@ CREATE TABLE purchase
     address_town VARCHAR(45),
     units NUMBER(15) NOT NULL,
     total_pay NUMBER(15) NOT NULL,
-    customer_preferred_contact NOT NULL,
-    payment_type NUMBER(15) NOT NULL,
+    customer_preferred_contact VARCHAR(45) NOT NULL,
+    payment_type VARCHAR(45) NOT NULL,
     credit_card_cardnum NUMBER(15),
     CONSTRAINT purchase_pk PRIMARY KEY(reference_price, reference_amount, reference_barcode, delivery_date, address_name, address_zip, address_country, address_town),
-    CONSTRAINT address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address,
-    CONSTRAINT fk_reference FOREIGN KEY (reference_price, reference_amount, reference_barcode) references REFERENCE(price, amount, barcode),
-    CONSTRAINT payment_type_fk FOREIGN KEY(payment_type) references payment_type(type),
-    CONSTRAINT credit_card_fk FOREIGN KEY(credit_card_cardnum) references credit_card(card_num),
-    CONSTRAINT customer_fk FOREIGN KEY(customer_preferred_contact) references customer(preferred_contact)
+    CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address,
+    CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, reference_barcode) references prod_reference(price, amount, barcode),
+    CONSTRAINT purchase_payment_type_fk FOREIGN KEY(payment_type) references payment_type(type),
+    CONSTRAINT purchase_credit_card_fk FOREIGN KEY(credit_card_cardnum) references credit_card(cardnum),
+    CONSTRAINT purchase_customer_fk FOREIGN KEY(customer_preferred_contact) references customer(preferred_contact)
 );
 
 CREATE INDEX address_per_client_town

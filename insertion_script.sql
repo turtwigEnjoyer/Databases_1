@@ -1,14 +1,28 @@
---- All of product & reference; Noam
 INSERT INTO cofea SELECT DISTINCT COFFEA from fsdb.catalogue;
 INSERT INTO origin SELECT DISTINCT ORIGIN from fsdb.catalogue;
 INSERT INTO roast SELECT DISTINCT ROASTING from fsdb.catalogue;
 INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
-INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
+COMMIT;
+
+INSERT INTO amount (format, quantity)
+	SELECT c.FORMAT, to_number(t.QUANTITY)
+	FROM fsdb.catalogue c
+	JOIN fsdb.trolley t ON c.PRODUCT = t.PRODUCT;
+COMMIT;
+
 INSERT INTO product_has_format SELECT DISTINCT FORMAT, PRODUCT from fsdb.catalogue;
 INSERT INTO varietal SELECT DISTINCT VARIETAL, COFFEA from fsdb.catalogue;
 INSERT INTO product_has_roast SELECT DISTINCT ROASTING, PRODUCT from fsdb.catalogue; 
 INSERT INTO product 
-	SELECT PRODUCT, VARIETAL, ORIGIN, ROASTING, DECAF, FORMAT, BARCODE from fsdb.catalogue;
+	SELECT PRODUCT, VARIETAL, ORIGIN, ROASTING, DECAF, FORMAT, to_number(BARCODE) 
+	from fsdb.catalogue;
+COMMIT;
+
+INSERT INTO reference SELECT 
+	SELECT to_number(c.COST_PRICE), to_number(t.QUANTITY), c.FORMAT, to_number(c.BARCODE), 
+	to_number(t.CUR_STOCK), to_number(t.MIN_STOCK), to_number(t.MAX_STOCK)
+	FROM fsdb.catalogue c
+	JOIN fsdb.trolley t ON c.PRODUCT = t.PRODUCT;
 COMMIT;
 -- Providers, orders purchase and addresses; Nora
 -- And client info, crredit cards, comment -> Laura

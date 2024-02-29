@@ -1,4 +1,15 @@
 --- All of product & reference; Noam
+INSERT INTO cofea SELECT DISTINCT COFFEA from fsdb.catalogue;
+INSERT INTO origin SELECT DISTINCT ORIGIN from fsdb.catalogue;
+INSERT INTO roast SELECT DISTINCT ROASTING from fsdb.catalogue;
+INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
+INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
+INSERT INTO product_has_format SELECT DISTINCT FORMAT, PRODUCT from fsdb.catalogue;
+INSERT INTO varietal SELECT DISTINCT VARIETAL, COFFEA from fsdb.catalogue;
+INSERT INTO product_has_roast SELECT DISTINCT ROASTING, PRODUCT from fsdb.catalogue; 
+INSERT INTO product 
+	SELECT PRODUCT, VARIETAL, ORIGIN, ROASTING, DECAF, FORMAT, BARCODE from fsdb.catalogue;
+COMMIT;
 -- Providers, orders purchase and addresses; Nora
 -- And client info, crredit cards, comment -> Laura
 

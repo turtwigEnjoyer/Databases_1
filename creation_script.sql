@@ -27,12 +27,13 @@ CREATE TABLE address
 (
     type VARCHAR(45),
     name VARCHAR(45),
-    zip VARCHAR(45),
+    zip NUMBER(7),
     country VARCHAR(45),
     town VARCHAR(45),
-    gate VARCHAR(45),
-    block_number NUMBER(15),
-    stairs VARCHAR(45),
+    gate VARCHAR(10),
+    floor NUMBER(3),
+    block_number NUMBER(3),
+    stairs VARCHAR(10),
     door VARCHAR(10),
     CONSTRAINT address_pk PRIMARY KEY(type, name, zip, country, town)
 );

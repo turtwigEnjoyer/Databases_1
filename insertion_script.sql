@@ -10,3 +10,9 @@ insert into address(type, name, gate, block_number, stairs, floor, door, zip, to
     DLIV_TOWN, DLIV_COUNTRY
     FROM fsdb.trolley;
     WHERE DLIV_WAYNAME, DLIV_WAYTYPE, DLIV_ZIP, DLIV_COUNTRY, DLIV_TOWN IS NOT NULL;
+
+
+insert into opinion( score, likes, endorsement, username,  text)
+    Select to_number(score), to_number(likes), endorsement, username , distinct text
+    from fsdb.posts
+    where score, likes, text is not null;

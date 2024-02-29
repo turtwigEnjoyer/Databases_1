@@ -76,4 +76,9 @@ insert into credit_card(cardnum, card_holder, company_name, expiration)
 	FROM fsdb.trolley;
 	WHERE CARD_NUMBER, CARD_HOLDER_ CARD_COMPANY, CARD_EXPIRATN IS NOT NULL;
 
-insert into
+insert into payment_type(type)
+	SELECT PAYMENT_TYPE
+	FROM fsdb.trolley;
+	WHERE PAYMENT_TYPE IS NOT NULL;
+
+

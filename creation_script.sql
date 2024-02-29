@@ -227,6 +227,7 @@ CREATE TABLE customer
 CREATE TABLE purchase
 (
     reference_price NUMBER(15),
+    format_format_type VARCHAR(45),
     reference_amount NUMBER(15),
     reference_barcode NUMBER(15),
     delivery_date DATE,
@@ -237,10 +238,11 @@ CREATE TABLE purchase
     address_town VARCHAR(45),
     units NUMBER(15) NOT NULL,
     total_pay NUMBER(15) NOT NULL,
-    customer_preferred_contact VARCHAR(45) NOT NULL,
+    customer_preferred_contact VARCHAR(60) NOT NULL,
     payment_type VARCHAR(45) NOT NULL,
-    credit_card_cardnum NUMBER(15),
+    credit_card_cardnum NUMBER(20),
     CONSTRAINT purchase_pk PRIMARY KEY(reference_price, reference_amount, reference_barcode, delivery_date, address_name, address_zip, address_country, address_town),
+    CONSTRAINT purchase_amount_fk FOREIGN KEY(format_format_type, reference_amount) references AMOUNT(format_format_type, quantity),
     CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address,
     CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, reference_barcode) references prod_reference(price, amount, barcode),
     CONSTRAINT purchase_payment_type_fk FOREIGN KEY(payment_type) references payment_type(type),

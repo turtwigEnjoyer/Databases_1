@@ -16,3 +16,6 @@ insert into opinion(text, score, likes, endorsement, username)
     SELECT to_number(SCORE), to_number(LIKES), to_number(ENDORSED), USERNAME, DISTINCT TEXT
     FROM fsdb.posts;
     WHERE TEXT, SCORE, LIKES IS NOT NULL;
+
+insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
+    SELECT USER_PASSW,  

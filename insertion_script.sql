@@ -12,7 +12,7 @@ insert into address(type, name, gate, block_number, stairs, floor, door, zip, to
     WHERE DLIV_WAYNAME, DLIV_WAYTYPE, DLIV_ZIP, DLIV_COUNTRY, DLIV_TOWN IS NOT NULL;
 
 
-insert into opinion( score, likes, endorsement, username,  text)
-    Select to_number(score), to_number(likes), endorsement, username , distinct text
-    from fsdb.posts
-    where score, likes, text is not null;
+insert into opinion(text, score, likes, endorsement, username)
+    SELECT to_number(SCORE), to_number(LIKES), to_number(ENDORSED), USERNAME, DISTINCT TEXT
+    FROM fsdb.posts;
+    WHERE TEXT, SCORE, LIKES IS NOT NULL;

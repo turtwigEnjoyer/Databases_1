@@ -45,15 +45,26 @@ insert into purchase(
     delivery_date,
     address_type, address_name, address_zip, address_country, address_town
 )
-SELECT quantity, client_mobile, payment_type, card_number,
+SELECT quantity, coalesce(client_mobile, client_email), payment_type, card_number,
 DISTINCT to_number(BASE_PRICE), PACKAGING, to_number(QUANTITY), barcode,
 to_date(delivery_date), 
 DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP), 
 DLIV_TOWN, DLIV_COUNTRY
 FROM fsdb.trolley
-WHERE BASE_PRICE, PACKAGING, QUANTITY, BARCODE IS NOT NULL;
+WHERE BASE_PRICE, PACKAGING, QUANTITY, BARCODE, 
+DLIV_WAYTYPE, DLIV_WAYNAME, DLIV_ZIP
+DLIV_TOWN, DLIV_COUNTRY, DLIV_DATE  IS NOT NULL;
 
 
+insert into providers(
+    DISTINCT CIF, NAME, FULL_NAME, EMAIL, PHONE, PROVIDER_ADDRESS
+)
+SELECT PROV_TAXID, SUPPLIER, PROV_BANKACC 
+PROV_ADDRESS CHAR(120)
+PROV_COUNTRY CHAR(45)
+PROV_PERSON CHAR(90)
+PROV_EMAIL CHAR(60)
+PROV_MOBILE
 
 
 insert into opinion(text, score, likes, endorsement, username)

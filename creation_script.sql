@@ -111,11 +111,7 @@ CREATE TABLE provider
     phone VARCHAR(45) NOT NULL,
     average_delivery_time NUMBER(15),
     num_of_deliveries_past_year NUMBER(15) DEFAULT 0 NOT NULL,
-    address_type VARCHAR(45) NOT NULL,
-    address_name VARCHAR(45) NOT NULL,
-    address_zip VARCHAR(45) NOT NULL,
-    address_country VARCHAR(45) NOT NULL,
-    address_town VARCHAR(45) NOT NULL,
+    provider_address VARCHAR(200) NOT NULL,
     CONSTRAINT provider_pk PRIMARY KEY(CIF),
     CONSTRAINT address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address
 );
@@ -237,7 +233,7 @@ CREATE TABLE purchase
     address_country VARCHAR(45),
     address_town VARCHAR(45),
     units NUMBER(15) NOT NULL,
-    total_pay NUMBER(15) NOT NULL,
+    total_pay NUMBER(15),
     customer_preferred_contact VARCHAR(60) NOT NULL,
     payment_type VARCHAR(45) NOT NULL,
     credit_card_cardnum NUMBER(20),

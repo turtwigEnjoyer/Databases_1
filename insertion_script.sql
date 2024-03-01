@@ -68,19 +68,19 @@ PROV_MOBILE
 
 
 insert into opinion(text, score, likes, endorsement, username)
-    SELECT to_number(SCORE), to_number(LIKES), to_number(ENDORSED), USERNAME, DISTINCT TEXT
+    SELECT DISTINCT TEXT, to_number(SCORE), to_number(LIKES), to_number(ENDORSED), USERNAME
     FROM fsdb.posts;
     WHERE TEXT, SCORE, LIKES IS NOT NULL;
 
 insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
-	SELECT USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE), to_number(DISCOUNT), DISTINCT USERNAME
+	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE), to_number(DISCOUNT)
 	FROM fsdb.trolley;
 	WHERE USERNAME, USER_PASSW, REG_DATE IS NOT NULL;
 
 insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_surname, username)
-	SELECT DISTINCT , CLIENT_NAME, CLIENT_SURN1, USERNAME
+	SELECT DISTINCT COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), CLIENT_EMAIL, CLIENT_NAME, CLIENT_SURN1, USERNAME
 	FROM fsdb.trolley;
-	WHERE  , CLIENT_NAME, CLIENT_SURN1 IS NOT NULL;
+	WHERE  CLIENT_MOBILE, CLIENT_EMAIL, CLIENT_NAME, CLIENT_SURN1 IS NOT NULL;
 
 insert into credit_card(cardnum, card_holder, company_name, expiration)
 	SELECT CARD_HOLDER, CARD_COMPANY, to_date(CARD_EXPIRATN), DISTINCT to_number(CARD_NUMBER)

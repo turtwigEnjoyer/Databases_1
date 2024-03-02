@@ -15,11 +15,18 @@ INSERT INTO product
 	from fsdb.catalogue;
 COMMIT;
 
-INSERT INTO reference SELECT 
-	SELECT to_number(c.COST_PRICE), to_number(t.QUANTITY), c.FORMAT, to_number(c.BARCODE), 
-	to_number(t.CUR_STOCK), to_number(t.MIN_STOCK), to_number(t.MAX_STOCK)
-	FROM fsdb.catalogue c
-	JOIN fsdb.trolley t ON c.PRODUCT = t.PRODUCT;
+INSERT INTO reference (cost_price, quantity, format, barcode, cur_stock, min_stock, max_stock)
+SELECT 
+    TO_NUMBER(c.COST_PRICE),
+    TO_NUMBER(t.QUANTITY),
+    c.FORMAT,
+    TO_NUMBER(c.BARCODE),
+    TO_NUMBER(c.CUR_STOCK),
+    TO_NUMBER(c.MIN_STOCK),
+    TO_NUMBER(c.MAX_STOCK)
+FROM 
+    fsdb.catalogue c
+    JOIN fsdb.trolley t ON c.PRODUCT = t.PRODUCT;
 COMMIT;
 -- Providers, orders purchase and addresses; Nora
 -- And client info, crredit cards, comment -> Laura

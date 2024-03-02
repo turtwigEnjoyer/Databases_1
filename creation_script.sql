@@ -157,7 +157,7 @@ CREATE TABLE provider_order
     price NUMBER(15),
     amount VARCHAR(45),
     format_format_type VARCHAR2(45),
-    barcode NUMBER(15),
+    barcode VARCHAR(45),
     order_date DATE NOT NULL,
     placed_date DATE,
     total_payment NUMBER(15),

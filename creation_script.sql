@@ -194,7 +194,7 @@ CREATE TABLE registered_customer
 (
     username VARCHAR(45),
     password VARCHAR(45) NOT NULL,
-    contact_preference VARCHAR(45) NOT NULL,
+    contact_preference VARCHAR(60) NOT NULL,
     registration_date DATE NOT NULL,
     loyalty_discount_voucher VARCHAR(15),
     CONSTRAINT registered_customer_pk PRIMARY KEY(username),

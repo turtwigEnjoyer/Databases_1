@@ -22,6 +22,9 @@ DROP TABLE registered_customer cascade constraints;
 DROP TABLE opinion cascade constraints;
 DROP TABLE customer cascade constraints;
 DROP TABLE purchase cascade constraints;
+DROP TABLE BARCODE CASCADE CONSTRAINTS;
+DROP TABLE AMOUNT_HAS_FORMAT CASCADE CONSTRAINTS;
+
 
 CREATE TABLE address
 (
@@ -64,10 +67,16 @@ CREATE TABLE product
     varietal_name VARCHAR(45) NOT NULL,
     origin_name VARCHAR(45) NOT NULL,
     decaf VARCHAR(3) NOT NULL,
-    barcode VARCHAR(45) NOT NULL UNIQUE,
     CONSTRAINT product_pk PRIMARY KEY(name),
     CONSTRAINT origin_fk FOREIGN KEY (origin_name) REFERENCES origin(name),
     CONSTRAINT varietal_fk FOREIGN KEY (varietal_name) references varietal(name)
+);
+
+CREATE TABLE BARCODE(
+    product_name VARCHAR2(50) NOT NULL,
+    bcode VARCHAR2(45),
+    CONSTRAINT barcode_pk PRIMARY KEY(bcode),
+    CONSTRAINT prod_barcode_fk FOREIGN KEY(product_name) references PRODUCT(name)
 );
 
 CREATE TABLE format
@@ -131,24 +140,29 @@ CREATE TABLE provider
 
 CREATE TABLE amount
 (
-    format_format_type VARCHAR(45) NOT NULL,
-    quantity VARCHAR(45) NOT NULL,
-    CONSTRAINT amount_pk PRIMARY KEY(format_format_type, quantity),
-    CONSTRAINT format_amount_fk FOREIGN KEY(format_format_type) references format(format_type)
+    quantity VARCHAR(45),
+    CONSTRAINT amount_pk PRIMARY KEY(quantity)
+);
+
+CREATE TABLE amount_has_format(
+    quantity VARCHAR(45),
+    format_type VARCHAR(45),
+    CONSTRAINT amount_has_format_pk PRIMARY KEY(quantity, format_type),
+    CONSTRAINT amounthas_format_fk FOREIGN KEY(format_type) references format(format_type),
+    CONSTRAINT has_amount_fk FOREIGN KEY(quantity) references amount(quantity)
 );
 
 CREATE TABLE prod_reference
 (
     price NUMBER(15),
     amount VARCHAR2(45),
-    format_format_type VARCHAR2(45),
-    barcode VARCHAR(45),
+    bcode VARCHAR(45),
     stock NUMBER(15) DEFAULT 0,
     minim NUMBER(15) DEFAULT 5,
     maxim NUMBER(15) DEFAULT 15,
-    CONSTRAINT reference_pk PRIMARY KEY(price, amount, format_format_type, barcode),
-    CONSTRAINT amount_fk FOREIGN KEY(amount, format_format_type) references amount(quantity, format_format_type),
-    CONSTRAINT prod_fk FOREIGN KEY(barcode) references product(barcode)
+    CONSTRAINT reference_pk PRIMARY KEY(price, amount, bcode),
+    CONSTRAINT amount_fk FOREIGN KEY(amount) references amount(quantity),
+    CONSTRAINT prod_fk FOREIGN KEY(bcode) references barcode(bcode)
 );
 
 
@@ -156,27 +170,26 @@ CREATE TABLE provider_has_reference
 (
     price NUMBER(15),
     amount VARCHAR2(45),
-    format_format_type VARCHAR2(45),
-    barcode VARCHAR2(45),
+    bcode VARCHAR2(45),
     provider_CIF VARCHAR2(15),
     provider_reference_price NUMBER(15),
-    CONSTRAINT provider_has_reference_pk PRIMARY KEY(price, amount, format_format_type, barcode, provider_CIF),
-    CONSTRAINT fk_provider_reference FOREIGN KEY(price, amount, format_format_type, barcode) references prod_reference(price, amount, format_format_type, barcode)
-);
+    CONSTRAINT provider_has_reference_pk PRIMARY KEY(price, amount, bcode, provider_CIF),
+    CONSTRAINT fk_provider_reference FOREIGN KEY(price, amount, bcode) references prod_reference(price, amount, bcode),
+    CONSTRAINT fk_phr_provider FOREIGN KEY(provider_CIF) references provider(CIF)
+); 
 
 CREATE TABLE provider_order
 (
     price NUMBER(15),
     amount VARCHAR(45),
-    format_format_type VARCHAR2(45),
-    barcode VARCHAR(45),
+    bcode VARCHAR(45),
     order_date DATE NOT NULL,
     placed_date DATE,
     total_payment NUMBER(15),
     fulfilled_date DATE,
     provider_CIF VARCHAR2(15),
-    CONSTRAINT order_pk PRIMARY KEY(price, amount, format_format_type, barcode, order_date),
-    CONSTRAINT fk_reference FOREIGN KEY(price, amount, format_format_type, barcode) references prod_reference(price, amount, format_format_type, barcode),
+    CONSTRAINT order_pk PRIMARY KEY(price, amount, bcode, order_date),
+    CONSTRAINT fk_reference FOREIGN KEY(price, amount, bcode) references prod_reference(price, amount, bcode),
     CONSTRAINT fk_provider FOREIGN KEY(provider_CIF) references PROVIDER(CIF)
 );
 
@@ -238,7 +251,6 @@ CREATE TABLE customer
 CREATE TABLE purchase
 (
     reference_price NUMBER(15),
-    format_format_type VARCHAR(45),
     reference_amount VARCHAR(45),
     reference_barcode VARCHAR(45),
     delivery_date DATE,
@@ -253,9 +265,9 @@ CREATE TABLE purchase
     payment_type VARCHAR(45) NOT NULL,
     credit_card_cardnum NUMBER(20),
     CONSTRAINT purchase_pk PRIMARY KEY(reference_price, reference_amount, reference_barcode, delivery_date, address_name, address_zip, address_country, address_town),
-    CONSTRAINT purchase_amount_fk FOREIGN KEY(format_format_type, reference_amount) references AMOUNT(format_format_type, quantity),
+    CONSTRAINT purchase_amount_fk FOREIGN KEY(reference_amount) references AMOUNT(quantity),
     CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address(type, name, zip, country, town),
-    CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, format_format_type, reference_barcode) references prod_reference(price, amount, format_format_type, barcode),
+    CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, reference_barcode) references prod_reference(price, amount, bcode),
     CONSTRAINT purchase_payment_type_fk FOREIGN KEY(payment_type) references payment_type(type),
     CONSTRAINT purchase_credit_card_fk FOREIGN KEY(credit_card_cardnum) references credit_card(cardnum),
     CONSTRAINT purchase_customer_fk FOREIGN KEY(customer_preferred_contact) references customer(preferred_contact)

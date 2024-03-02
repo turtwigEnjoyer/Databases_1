@@ -101,9 +101,9 @@ insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_sur
 	WHERE (CLIENT_MOBILE IS NOT NULL OR CLIENT_EMAIL IS NOT NULL) AND CLIENT_NAME, CLIENT_SURN1 IS NOT NULL;
 
 insert into credit_card(cardnum, card_holder, company_name, expiration)
-	SELECT DISTINCT to_number(CARD_NUMBER), CARD_HOLDER, CARD_COMPANY, to_date(CARD_EXPIRATN)
-	FROM fsdb.trolley
-	WHERE CARD_NUMBER, CARD_HOLDER_ CARD_COMPANY, CARD_EXPIRATN IS NOT NULL;
+	SELECT DISTINCT to_number(CARD_NUMBER), CARD_HOLDER, CARD_COMPANY, to_date(CARD_EXPIRATN, 'MM/YY')
+  	FROM fsdb.trolley
+  	WHERE CARD_NUMBER IS NOT NULL AND CARD_HOLDER IS NOT NULL AND CARD_COMPANY IS NOT NULL AND CARD_EXPIRATN IS NOT NULL;
 
 insert into payment_type(type)
 	SELECT DISTINCT PAYMENT_TYPE

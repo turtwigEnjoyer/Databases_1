@@ -60,7 +60,7 @@ CREATE TABLE varietal
 
 CREATE TABLE product
 (
-    name VARCHAR(45),
+    name VARCHAR(50),
     varietal_name VARCHAR(45) NOT NULL,
     origin_name VARCHAR(45) NOT NULL,
     decaf VARCHAR(5) NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE format
 CREATE TABLE product_has_format
 (
     format_format_type VARCHAR(45),
-    product_name VARCHAR(45),
+    product_name VARCHAR(50),
     CONSTRAINT product_has_format_pk PRIMARY KEY(format_format_type, product_name),
     CONSTRAINT product_fk FOREIGN KEY(product_name) references product(name),
     constraint format_fk FOREIGN KEY(format_format_type) references format(format_type)

@@ -4,7 +4,7 @@ INSERT INTO roast SELECT DISTINCT ROASTING from fsdb.catalogue;
 INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
 COMMIT;
 
-INSERT INTO amount (format_format_type, quantity) SELECT FORMAT, to_number(PACKAGING) from fsdb.catalogue;
+INSERT INTO amount (format_format_type, quantity) SELECT FORMAT, PACKAGING from fsdb.catalogue;
 COMMIT;
 
 INSERT INTO product_has_format SELECT DISTINCT FORMAT, PRODUCT from fsdb.catalogue;

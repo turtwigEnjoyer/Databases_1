@@ -44,6 +44,19 @@ FROM fsdb.trolley
 WHERE DLIV_WAYNAME IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_ZIP IS NOT NULL AND DLIV_COUNTRY
 IS NOT NULL AND DLIV_TOWN IS NOT NULL AND (VALIDATE_CONVERSION(DLIV_FLOOR AS NUMBER) = 1);
 
+insert all
+INTO contact_preference(type) values('email')
+INTO contact_preference(type) values('phonecall')
+INTO contact_preference(type) values('sms')
+INTO contact_preference(type) values('whatsapp')
+INTO contact_preference(type) values('facebook')
+INTO contact_preference(type) values('wechat')
+INTO contact_preference(type) values('qqmobile')
+INTO contact_preference(type) values('snapchat')
+INTO contact_preference(type) values('telegram')
+select * from dual;
+
+
 insert into purchase(
     units,
     customer_preferred_contact,

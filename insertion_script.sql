@@ -99,10 +99,10 @@ AND PROV_TAXID IS NOT NULL;
 
 
 
-insert into opinion(text, score, likes, endorsement, username)
+insert into opinion(textop, score, likes, endorsement, username)
     SELECT DISTINCT TEXT, to_number(SCORE), to_number(LIKES), to_number(ENDORSED), USERNAME
     FROM fsdb.posts
-    WHERE TEXT, SCORE, LIKES IS NOT NULL;
+    WHERE TEXT IS NOT NULL AND SCORE IS NOT NULL AND LIKES IS NOT NULL;
 
 insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
 	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE, 'YYYY/MM/DD'), DISCOUNT

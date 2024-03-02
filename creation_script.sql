@@ -202,7 +202,7 @@ CREATE TABLE registered_customer
 
 CREATE TABLE opinion
 (
-    text VARCHAR(2000),
+    textop VARCHAR(2000),
     score NUMBER(15) DEFAULT 0 NOT NULL,
     likes NUMBER(15) DEFAULT 0 NOT NULL,
     endorsement NUMBER(15),

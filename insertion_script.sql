@@ -77,7 +77,7 @@ insert into opinion(text, score, likes, endorsement, username)
     WHERE TEXT, SCORE, LIKES IS NOT NULL;
 
 insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
-	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE), to_number(DISCOUNT)
+	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE, 'YYYY/MM/DD'), to_number(DISCOUNT)
 	FROM fsdb.trolley
 	WHERE USERNAME IS NOT NULL AND USER_PASSW IS NOT NULL AND REG_DATE IS NOT NULL;
 

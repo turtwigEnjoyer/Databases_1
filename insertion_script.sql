@@ -1,16 +1,23 @@
-INSERT INTO cofea SELECT DISTINCT COFFEA from fsdb.catalogue;
-INSERT INTO origin SELECT DISTINCT ORIGIN from fsdb.catalogue;
-INSERT INTO roast SELECT DISTINCT ROASTING from fsdb.catalogue;
-INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
+INSERT INTO coffea SELECT DISTINCT COFFEA from fsdb.catalogue WHERE COFFEA IS NOT NULL;
+INSERT INTO origin SELECT DISTINCT ORIGIN from fsdb.catalogue WHERE origin IS NOT NULL;
+INSERT INTO roast SELECT DISTINCT ROASTING from fsdb.catalogue WHERE ROASTING IS NOT NULL;
+INSERT INTO format(format_type) SELECT DISTINCT FORMAT from fsdb.catalogue WHERE FORMAT IS NOT NULL;
 
-INSERT INTO amount (format_format_type, quantity) SELECT DISTINCT FORMAT, PACKAGING from fsdb.catalogue;
+INSERT INTO amount (format_format_type, quantity) SELECT DISTINCT FORMAT, PACKAGING from fsdb.catalogue where FORMAT is not null and PACKAGING is not null;
 
-INSERT INTO product_has_format SELECT DISTINCT FORMAT, PRODUCT from fsdb.catalogue;
-INSERT INTO varietal SELECT DISTINCT VARIETAL, COFFEA from fsdb.catalogue;
-INSERT INTO product_has_roast SELECT DISTINCT ROASTING, PRODUCT from fsdb.catalogue; 
+INSERT INTO varietal SELECT DISTINCT VARIETAL, COFFEA from fsdb.catalogue
+WHERE VARIETAL IS NOT NULL AND COFFEA IS NOT NULL;
+
 INSERT INTO product 
-	SELECT DISTINCT PRODUCT, VARIETAL, ORIGIN, DECAF, BARCODE
-	from fsdb.catalogue;
+	SELECT DISTINCT PRODUCT, VARIETAL, ORIGIN, SUBSTR(DECAF, 0, 3), BARCODE
+	from fsdb.catalogue
+	WHERE PRODUCT IS NOT NULL AND VARIETAL IS NOT NULL AND ORIGIN IS NOT NULL AND DECAF IS NOT NULL AND BARCODE IS NOT NULL;
+
+INSERT INTO product_has_format SELECT DISTINCT FORMAT, PRODUCT from fsdb.catalogue
+WHERE FORMAT IS NOT NULL AND PRODUCT IS NOT NULL;
+
+INSERT INTO product_has_roast SELECT DISTINCT ROASTING, PRODUCT from fsdb.catalogue
+WHERE ROASTING IS NOT NULL AND PRODUCT IS NOT NULL;
 
 insert into credit_card(cardnum, card_holder, company_name, expiration)
 	SELECT DISTINCT to_number(CARD_NUMBER), CARD_HOLDER, CARD_COMPANY, to_date(CARD_EXPIRATN, 'MM/YY')
@@ -22,10 +29,10 @@ insert into payment_type(type)
 	FROM fsdb.trolley
 	WHERE PAYMENT_TYPE IS NOT NULL;
 
-INSERT INTO reference (cost_price, quantity, format, barcode, cur_stock, min_stock, max_stock)
+INSERT INTO prod_reference (price, quantity, format_format_type, barcode, stock, minim, maxim)
 SELECT 
 	DISTINCT
-    TO_NUMBER(c.COST_PRICE),
+    TO_NUMBER(c.RETAIL_PRICE),
     c.PACKAGING,
     c.FORMAT,
     c.BARCODE,
@@ -33,8 +40,13 @@ SELECT
     TO_NUMBER(c.MIN_STOCK),
     TO_NUMBER(c.MAX_STOCK)
 FROM 
-    fsdb.catalogue c;
-COMMIT;
+    fsdb.catalogue c
+WHERE
+	C.RETAIL_PRICE IS NOT NULL 
+	AND C.PACKAGING IS NOT NULL
+	AND C.FORMAT IS NOT NULL
+	AND C.BARCODE IS NOT NULL;
+
 
 insert into address(gate, block_number, stairs, floor, door, type, name, zip, town, country) 
 SELECT DISTINCT

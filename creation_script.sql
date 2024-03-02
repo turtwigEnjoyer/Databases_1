@@ -112,8 +112,7 @@ CREATE TABLE provider
     average_delivery_time NUMBER(15),
     num_of_deliveries_past_year NUMBER(15) DEFAULT 0 NOT NULL,
     provider_address VARCHAR(200) NOT NULL,
-    CONSTRAINT provider_pk PRIMARY KEY(CIF),
-    CONSTRAINT address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address
+    CONSTRAINT provider_pk PRIMARY KEY(CIF)
 );
 
 CREATE TABLE amount
@@ -153,7 +152,7 @@ CREATE TABLE provider_has_reference
 CREATE TABLE provider_order
 (
     price NUMBER(15),
-    amount NUMBER(15),
+    amount VARCHAR(45),
     barcode NUMBER(15),
     order_date DATE NOT NULL,
     placed_date DATE,
@@ -224,7 +223,7 @@ CREATE TABLE purchase
 (
     reference_price NUMBER(15),
     format_format_type VARCHAR(45),
-    reference_amount NUMBER(15),
+    reference_amount VARCHAR(45),
     reference_barcode NUMBER(15),
     delivery_date DATE,
     address_type VARCHAR(45),
@@ -239,7 +238,7 @@ CREATE TABLE purchase
     credit_card_cardnum NUMBER(20),
     CONSTRAINT purchase_pk PRIMARY KEY(reference_price, reference_amount, reference_barcode, delivery_date, address_name, address_zip, address_country, address_town),
     CONSTRAINT purchase_amount_fk FOREIGN KEY(format_format_type, reference_amount) references AMOUNT(format_format_type, quantity),
-    CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address,
+    CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address(type, name, zip, country,town),
     CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, reference_barcode) references prod_reference(price, amount, barcode),
     CONSTRAINT purchase_payment_type_fk FOREIGN KEY(payment_type) references payment_type(type),
     CONSTRAINT purchase_credit_card_fk FOREIGN KEY(credit_card_cardnum) references credit_card(cardnum),

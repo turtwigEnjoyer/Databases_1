@@ -207,7 +207,7 @@ CREATE TABLE opinion
     likes NUMBER(15) DEFAULT 0 NOT NULL,
     endorsement NUMBER(15),
     username VARCHAR(45),
-    CONSTRAINT opinion_pk PRIMARY KEY(text),
+    CONSTRAINT opinion_pk PRIMARY KEY(textop),
     CONSTRAINT fk_registered_customer FOREIGN KEY(username) references REGISTERED_CUSTOMER(username)
 );
 

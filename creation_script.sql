@@ -1,27 +1,27 @@
 
 -- Create tables
 
-DROP TABLE address;
-DROP TABLE origin;
-DROP TABLE coffea;
-DROP TABLE varietal;
-DROP TABLE product;
-DROP TABLE format;
-DROP TABLE product_has_format;
-DROP TABLE roast;
-DROP TABLE product_has_roast;
-DROP TABLE provider;
-DROP TABLE amount;
-DROP TABLE prod_reference;
-DROP TABLE provider_has_reference;
-DROP TABLE provider_order;
-DROP TABLE payment_type;
-DROP TABLE credit_card;
-DROP TABLE contact_preference;
-DROP TABLE registered_customer;
-DROP TABLE opinion;
-DROP TABLE customer;
-DROP TABLE purchase;
+DROP TABLE address cascade constraints;
+DROP TABLE origin cascade constraints;
+DROP TABLE coffea cascade constraints;
+DROP TABLE varietal cascade constraints;
+DROP TABLE product cascade constraints;
+DROP TABLE format cascade constraints;
+DROP TABLE product_has_format cascade constraints;
+DROP TABLE roast cascade constraints;
+DROP TABLE product_has_roast cascade constraints;
+DROP TABLE provider cascade constraints;
+DROP TABLE amount cascade constraints;
+DROP TABLE prod_reference cascade constraints;
+DROP TABLE provider_has_reference cascade constraints;
+DROP TABLE provider_order cascade constraints;
+DROP TABLE payment_type cascade constraints;
+DROP TABLE credit_card cascade constraints;
+DROP TABLE contact_preference cascade constraints;
+DROP TABLE registered_customer cascade constraints;
+DROP TABLE opinion cascade constraints;
+DROP TABLE customer cascade constraints;
+DROP TABLE purchase cascade constraints;
 
 CREATE TABLE address
 (

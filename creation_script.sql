@@ -109,9 +109,12 @@ CREATE TABLE provider
     full_name VARCHAR(45) NOT NULL,
     email VARCHAR(45) NOT NULL,
     phone VARCHAR(45) NOT NULL,
+    bank_account VARCHAR(45),
+    provider_address VARCHAR(120) NOT NULL,
+    country VARCHAR(45),
     average_delivery_time NUMBER(15),
     num_of_deliveries_past_year NUMBER(15) DEFAULT 0 NOT NULL,
-    provider_address VARCHAR(200) NOT NULL,
+    
     CONSTRAINT provider_pk PRIMARY KEY(CIF)
 );
 
@@ -126,13 +129,13 @@ CREATE TABLE amount
 CREATE TABLE prod_reference
 (
     price NUMBER(15),
-    amount NUMBER(15),
+    amount VARCHAR2(45),
     format_format_type VARCHAR2(45),
     barcode NUMBER(15),
     stock NUMBER(15) NOT NULL,
     minim NUMBER(15) NOT NULL,
     maxim NUMBER(15) NOT NULL,
-    CONSTRAINT reference_pk PRIMARY KEY(price, amount, barcode),
+    CONSTRAINT reference_pk PRIMARY KEY(price, amount, format_format_type, barcode),
     CONSTRAINT amount_fk FOREIGN KEY(amount, format_format_type) references amount(quantity, format_format_type),
     CONSTRAINT prod_fk FOREIGN KEY(barcode) references product(barcode)
 );
@@ -141,26 +144,28 @@ CREATE TABLE prod_reference
 CREATE TABLE provider_has_reference
 (
     price NUMBER(15),
-    amount NUMBER(15),
-    barcode NUMBER(15),
+    amount VARCHAR2(45),
+    format_format_type VARCHAR2(45),
+    barcode VARCHAR2(45),
     provider_CIF NUMBER(15) ,
     provider_reference_price NUMBER(15),
-    CONSTRAINT provider_has_reference_pk PRIMARY KEY(price, amount, barcode, provider_CIF),
-    CONSTRAINT fk_provider_reference FOREIGN KEY(price, amount, barcode) references prod_reference(price, amount, barcode)
+    CONSTRAINT provider_has_reference_pk PRIMARY KEY(price, amount, format_format_type, barcode, provider_CIF),
+    CONSTRAINT fk_provider_reference FOREIGN KEY(price, amount, format_format_type, barcode) references prod_reference(price, amount, format_format_type, barcode)
 );
 
 CREATE TABLE provider_order
 (
     price NUMBER(15),
     amount VARCHAR(45),
+    format_format_type VARCHAR2(45),
     barcode NUMBER(15),
     order_date DATE NOT NULL,
     placed_date DATE,
     total_payment NUMBER(15),
     fulfilled_date DATE,
     provider_CIF NUMBER(15),
-    CONSTRAINT order_pk PRIMARY KEY(price, amount, barcode, order_date),
-    CONSTRAINT fk_reference FOREIGN KEY(price, amount, barcode) references prod_reference(price, amount, barcode),
+    CONSTRAINT order_pk PRIMARY KEY(price, amount, format_format_type, barcode, order_date),
+    CONSTRAINT fk_reference FOREIGN KEY(price, amount, format_format_type, barcode) references prod_reference(price, amount, format_format_type, barcode),
     CONSTRAINT fk_provider FOREIGN KEY(provider_CIF) references PROVIDER(CIF)
 );
 

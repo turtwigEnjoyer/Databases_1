@@ -33,12 +33,16 @@ COMMIT;
 
 
 insert into address(gate, block_number, stairs, floor, door, type, name, zip, town, country) 
-SELECT DISTINCT DLIV_GATE, to_number(DLIV_BLOCK), DLIV_STAIRW,
-to_number(DLIV_FLOOR), DLIV_DOOR,
-DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP),
-DLIV_TOWN, DLIV_COUNTRY
+SELECT DISTINCT
+	DLIV_GATE, to_number(DLIV_BLOCK),
+	DLIV_STAIRW,
+	to_number(DLIV_FLOOR),
+	DLIV_DOOR,
+	DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP),
+	DLIV_TOWN, DLIV_COUNTRY
 FROM fsdb.trolley
-WHERE DLIV_WAYNAME IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_ZIP IS NOT NULL AND DLIV_COUNTRY IS NOT NULL AND DLIV_TOWN IS NOT NULL;
+WHERE DLIV_WAYNAME IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_ZIP IS NOT NULL AND DLIV_COUNTRY
+IS NOT NULL AND DLIV_TOWN IS NOT NULL;
 
 insert into purchase(
     units,
@@ -47,28 +51,52 @@ insert into purchase(
     credit_card_cardnum,
     reference_price, format_format_type, reference_amount, reference_barcode,
     delivery_date,
-    address_type, address_name, address_zip, address_country, address_town
+    address_type, address_name, address_zip, address_country, address_town,
+	total_pay
 )
-SELECT quantity, coalesce(client_mobile, client_email), payment_type, card_number,
-DISTINCT to_number(BASE_PRICE), PACKAGING, to_number(QUANTITY), barcode,
+SELECT DISTINCT quantity, coalesce(client_mobile, client_email), payment_type, card_number,
+to_number(BASE_PRICE), PACKAGING, to_number(QUANTITY), barcode,
 to_date(delivery_date), 
 DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP), 
-DLIV_TOWN, DLIV_COUNTRY
+DLIV_TOWN, DLIV_COUNTRY,
+(to_number(BASE_PRICE)*QUANTITY)
+
 FROM fsdb.trolley
-WHERE BASE_PRICE, PACKAGING, QUANTITY, BARCODE, 
-DLIV_WAYTYPE, DLIV_WAYNAME, DLIV_ZIP
-DLIV_TOWN, DLIV_COUNTRY, DLIV_DATE  IS NOT NULL;
+WHERE BASE_PRICE IS NOT NULL AND PACKAGING IS NOT NULL AND QUANTITY IS NOT NULL AND BARCODE IS NOT NULL AND  
+IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_WAYNAME IS NOT NULL AND DLIV_ZIP IS NOT NULL AND
+DLIV_TOWN IS NOT NULL AND DLIV_COUNTRY IS NOT NULL AND DLIV_DATE IS NOT NULL;
 
 
-insert into providers(
-    DISTINCT CIF, NAME, FULL_NAME, EMAIL, PHONE, PROVIDER_ADDRESS
+insert into provider(
+    CIF, NAME, PROVIDER_ADDRESS, COUNTRY, FULL_NAME, EMAIL, PHONE, bank_account
 )
-SELECT PROV_TAXID, SUPPLIER, PROV_BANKACC 
-PROV_ADDRESS CHAR(120)
-PROV_COUNTRY CHAR(45)
-PROV_PERSON CHAR(90)
-PROV_EMAIL CHAR(60)
-PROV_MOBILE
+SELECT DISTINCT TO_NUMBER(PROV_TAXID), SUPPLIER,
+PROV_ADDRESS,
+PROV_COUNTRY,
+PROV_PERSON,
+PROV_EMAIL,
+PROV_MOBILE,
+PROV_BANKACC
+FROM fsdb.catalogue
+WHERE PROV_TAXID IS NOT NULL AND SUPPLIER IS NOT NULL AND PROV_ADDRESS IS NOT NULL AND PROV_COUNTRY IS NOT NULL
+AND PROV_PERSON IS NOT NULL AND PROV_EMAIL IS NOT NULL AND PROV_MOBILE IS NOT NULL;
+
+insert into provider_has_reference(
+	price,
+    amount,
+	format_format_type,
+    barcode,
+    provider_CIF,
+    provider_reference_price
+)
+SELECT DISTINCT
+	TO_NUMBER(RETAIL_PRICE), PACKAGING, FORMAT, BARCODE, TO_NUMBER(PROV_TAXID), TO_NUMBER(COST_PRICE)
+FROM FSDB.catalogue
+where RETAIL_PRICE IS NOT NULL AND PACKAGING IS NOT NULL AND FORMAT IS NOT NULL AND BARCODE IS NOT NULL 
+AND PROV_TAXID IS NOT NULL;
+
+
+
 
 
 insert into opinion(text, score, likes, endorsement, username)

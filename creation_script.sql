@@ -99,8 +99,20 @@ CREATE TABLE product_has_roast
     CONSTRAINT product_roast_fk FOREIGN KEY(product_name) references product(name),
     CONSTRAINT roast_fk FOREIGN KEY(roast_roast_type) references roast(roast_type)
 );
-
-
+CREATE TABLE product_has_varietal(
+    varietal_name VARCHAR(45),
+    product_name VARCHAR(45),
+    CONSTRAINT product_has_varietal_pk PRIMARY KEY(varietal_name, product_name),
+    CONSTRAINT product_varietal_fk FOREIGN KEY(product_name) references product(name),
+    CONSTRAINT hasvarietal_fk FOREIGN KEY(varietal_name) references varietal(name)
+)
+CREATE TABLE product_has_origin(
+    origin_name VARCHAR(45),
+    product_name VARCHAR(45),
+    CONSTRAINT product_has_origin_pk PRIMARY KEY(origin_name, product_name),
+    CONSTRAINT product_varietal_fk FOREIGN KEY(product_name) references product(name),
+    CONSTRAINT hasorigin_fk FOREIGN KEY(origin_name) references origin(name)
+)
 
 CREATE TABLE provider
 (

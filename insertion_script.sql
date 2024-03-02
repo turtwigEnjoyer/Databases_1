@@ -107,7 +107,7 @@ insert into opinion(text, score, likes, endorsement, username)
 insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
 	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE, 'YYYY/MM/DD'), DISCOUNT
 	FROM fsdb.trolley
-	WHERE USERNAME IS NOT NULL AND USER_PASSW IS NOT NULL AND REG_DATE IS NOT NULL;
+	WHERE USERNAME IS NOT NULL AND USER_PASSW IS NOT NULL AND (CLIENT_MOBILE IS NOT NULL OR CLIENT_EMAIL IS NOT NULL) AND REG_DATE IS NOT NULL;
 
 insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_surname, username)
 	SELECT 

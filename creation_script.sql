@@ -214,8 +214,8 @@ CREATE TABLE opinion
 
 CREATE TABLE customer
 (
-    preferred_contact VARCHAR(45),
-    alternate_contact VARCHAR(45),
+    preferred_contact VARCHAR(70),
+    alternate_contact VARCHAR(70),
     buyer_name VARCHAR(45) NOT NULL,
     buyer_surname VARCHAR(45) NOT NULL,
     username VARCHAR(45),

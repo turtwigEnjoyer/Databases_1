@@ -73,12 +73,12 @@ PROV_MOBILE
 
 insert into opinion(text, score, likes, endorsement, username)
     SELECT DISTINCT TEXT, to_number(SCORE), to_number(LIKES), to_number(ENDORSED), USERNAME
-    FROM fsdb.posts;
+    FROM fsdb.posts
     WHERE TEXT, SCORE, LIKES IS NOT NULL;
 
 insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
 	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE), to_number(DISCOUNT)
-	FROM fsdb.trolley;
+	FROM fsdb.trolley
 	WHERE USERNAME, USER_PASSW, REG_DATE IS NOT NULL;
 
 insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_surname, username)
@@ -102,12 +102,12 @@ insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_sur
 
 insert into credit_card(cardnum, card_holder, company_name, expiration)
 	SELECT CARD_HOLDER, CARD_COMPANY, to_date(CARD_EXPIRATN), DISTINCT to_number(CARD_NUMBER)
-	FROM fsdb.trolley;
+	FROM fsdb.trolley
 	WHERE CARD_NUMBER, CARD_HOLDER_ CARD_COMPANY, CARD_EXPIRATN IS NOT NULL;
 
 insert into payment_type(type)
 	SELECT DISTINCT PAYMENT_TYPE
-	FROM fsdb.trolley;
+	FROM fsdb.trolley
 	WHERE PAYMENT_TYPE IS NOT NULL;
 
 

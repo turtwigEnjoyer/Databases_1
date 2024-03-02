@@ -124,7 +124,7 @@ insert into registered_customer(username, password, contact_preference, registra
 	WHERE USERNAME IS NOT NULL AND USER_PASSW IS NOT NULL AND (CLIENT_MOBILE IS NOT NULL OR CLIENT_EMAIL IS NOT NULL) AND REG_DATE IS NOT NULL;
 
 insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_surname, username)
-	SELECT 
+	SELECT DISTINCT
 		COALESCE(
 			CASE 
 			    WHEN CLIENT_MOBILE IS NOT NULL THEN CLIENT_MOBILE

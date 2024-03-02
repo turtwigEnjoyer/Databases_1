@@ -118,10 +118,23 @@ insert into opinion(textop, score, likes, endorsement, username)
     FROM fsdb.posts
     WHERE TEXT IS NOT NULL AND SCORE IS NOT NULL AND LIKES IS NOT NULL;
 
-insert into registered_customer(username, password, contact_preference, registration_date, loyalty_discount_voucher)
-	SELECT DISTINCT USERNAME, USER_PASSW, COALESCE(CLIENT_MOBILE, CLIENT_EMAIL), to_date(REG_DATE, 'YYYY/MM/DD'), DISCOUNT
-	FROM fsdb.trolley
-	WHERE USERNAME IS NOT NULL AND USER_PASSW IS NOT NULL AND (CLIENT_MOBILE IS NOT NULL OR CLIENT_EMAIL IS NOT NULL) AND REG_DATE IS NOT NULL;
+INSERT INTO registered_customer (username, password, contact_preference, registration_date, loyalty_discount_voucher)
+SELECT DISTINCT
+    USERNAME,
+    USER_PASSW,
+    CASE
+        WHEN CLIENT_MOBILE IS NOT NULL THEN 'sms'
+        WHEN CLIENT_EMAIL IS NOT NULL THEN 'email'
+    END AS contact_preference,
+    TO_DATE(REG_DATE, 'YYYY/MM/DD'),
+    DISCOUNT
+FROM fsdb.trolley
+WHERE
+    USERNAME IS NOT NULL
+    AND USER_PASSW IS NOT NULL
+    AND (CLIENT_MOBILE IS NOT NULL OR CLIENT_EMAIL IS NOT NULL)
+    AND REG_DATE IS NOT NULL;
+
 
 insert into customer(preferred_contact, alternate_contact, buyer_name, buyer_surname, username)
 	SELECT DISTINCT

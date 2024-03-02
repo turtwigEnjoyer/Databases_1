@@ -64,7 +64,7 @@ CREATE TABLE product
     varietal_name VARCHAR(45) NOT NULL,
     origin_name VARCHAR(45) NOT NULL,
     decaf VARCHAR(5) NOT NULL,
-    barcode NUMBER(15) NOT NULL UNIQUE,
+    barcode VARCHAR(45) NOT NULL UNIQUE,
     CONSTRAINT product_pk PRIMARY KEY(name),
     CONSTRAINT origin_fk FOREIGN KEY (origin_name) REFERENCES origin(name),
     CONSTRAINT varietal_fk FOREIGN KEY (varietal_name) references varietal(name)

@@ -4,41 +4,41 @@ INSERT INTO roast SELECT DISTINCT ROASTING from fsdb.catalogue;
 INSERT INTO format SELECT DISTINCT FORMAT from fsdb.catalogue;
 COMMIT;
 
-INSERT INTO amount (format_format_type, quantity) SELECT FORMAT, PACKAGING from fsdb.catalogue;
+INSERT INTO amount (format_format_type, quantity) SELECT DISTINCT FORMAT, PACKAGING from fsdb.catalogue;
 COMMIT;
 
 INSERT INTO product_has_format SELECT DISTINCT FORMAT, PRODUCT from fsdb.catalogue;
 INSERT INTO varietal SELECT DISTINCT VARIETAL, COFFEA from fsdb.catalogue;
 INSERT INTO product_has_roast SELECT DISTINCT ROASTING, PRODUCT from fsdb.catalogue; 
 INSERT INTO product 
-	SELECT PRODUCT, VARIETAL, ORIGIN, ROASTING, DECAF, FORMAT, to_number(BARCODE) 
+	SELECT DISTINCT PRODUCT, VARIETAL, ORIGIN, DECAF, BARCODE
 	from fsdb.catalogue;
 COMMIT;
 
 INSERT INTO reference (cost_price, quantity, format, barcode, cur_stock, min_stock, max_stock)
 SELECT 
+	DISTINCT
     TO_NUMBER(c.COST_PRICE),
-    TO_NUMBER(t.QUANTITY),
+    c.PACKAGING,
     c.FORMAT,
-    TO_NUMBER(c.BARCODE),
+    c.BARCODE,
     TO_NUMBER(c.CUR_STOCK),
     TO_NUMBER(c.MIN_STOCK),
     TO_NUMBER(c.MAX_STOCK)
 FROM 
-    fsdb.catalogue c
-    JOIN fsdb.trolley t ON c.PRODUCT = t.PRODUCT;
+    fsdb.catalogue c;
 COMMIT;
 -- Providers, orders purchase and addresses; Nora
 -- And client info, crredit cards, comment -> Laura
 
 
 insert into address(gate, block_number, stairs, floor, door, type, name, zip, town, country) 
-    SELECT DLIV_GATE, to_number(DLIV_BLOCK), DLIV_STAIRW,
-    to_number(DLIV_FLOOR), DLIV_DOOR,
-    DISTINCT DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP), 
-    DLIV_TOWN, DLIV_COUNTRY
-    FROM fsdb.trolley
-    WHERE DLIV_WAYNAME, DLIV_WAYTYPE, DLIV_ZIP, DLIV_COUNTRY, DLIV_TOWN IS NOT NULL;
+SELECT DISTINCT DLIV_GATE, to_number(DLIV_BLOCK), DLIV_STAIRW,
+to_number(DLIV_FLOOR), DLIV_DOOR,
+DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP),
+DLIV_TOWN, DLIV_COUNTRY
+FROM fsdb.trolley
+WHERE DLIV_WAYNAME IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_ZIP IS NOT NULL AND DLIV_COUNTRY IS NOT NULL AND DLIV_TOWN IS NOT NULL;
 
 insert into purchase(
     units,

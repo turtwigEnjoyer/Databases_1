@@ -114,7 +114,6 @@ CREATE TABLE provider
     country VARCHAR(45),
     average_delivery_time NUMBER(15),
     num_of_deliveries_past_year NUMBER(15) DEFAULT 0 NOT NULL,
-    
     CONSTRAINT provider_pk PRIMARY KEY(CIF)
 );
 
@@ -131,7 +130,7 @@ CREATE TABLE prod_reference
     price NUMBER(15),
     amount VARCHAR2(45),
     format_format_type VARCHAR2(45),
-    barcode NUMBER(15),
+    barcode VARCHAR(45),
     stock NUMBER(15) NOT NULL,
     minim NUMBER(15) NOT NULL,
     maxim NUMBER(15) NOT NULL,
@@ -233,7 +232,7 @@ CREATE TABLE purchase
     delivery_date DATE,
     address_type VARCHAR(45),
     address_name VARCHAR(45),
-    address_zip VARCHAR(45),
+    address_zip NUMBER(7),
     address_country VARCHAR(45),
     address_town VARCHAR(45),
     units NUMBER(15) NOT NULL,
@@ -243,8 +242,8 @@ CREATE TABLE purchase
     credit_card_cardnum NUMBER(20),
     CONSTRAINT purchase_pk PRIMARY KEY(reference_price, reference_amount, reference_barcode, delivery_date, address_name, address_zip, address_country, address_town),
     CONSTRAINT purchase_amount_fk FOREIGN KEY(format_format_type, reference_amount) references AMOUNT(format_format_type, quantity),
-    CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address(type, name, zip, country,town),
-    CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, reference_barcode) references prod_reference(price, amount, barcode),
+    CONSTRAINT purchase_address_fk FOREIGN KEY(address_type, address_name, address_zip, address_country, address_town) references address(type, name, zip, country, town),
+    CONSTRAINT purchase_fk_reference FOREIGN KEY(reference_price, reference_amount, format_format_type, reference_barcode) references prod_reference(price, amount, format_format_type, barcode),
     CONSTRAINT purchase_payment_type_fk FOREIGN KEY(payment_type) references payment_type(type),
     CONSTRAINT purchase_credit_card_fk FOREIGN KEY(credit_card_cardnum) references credit_card(cardnum),
     CONSTRAINT purchase_customer_fk FOREIGN KEY(customer_preferred_contact) references customer(preferred_contact)

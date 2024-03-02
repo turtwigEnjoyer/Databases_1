@@ -119,7 +119,7 @@ CREATE TABLE provider
 CREATE TABLE amount
 (
     format_format_type VARCHAR(45) NOT NULL,
-    quantity NUMBER(15) NOT NULL,
+    quantity VARCHAR(45) NOT NULL,
     CONSTRAINT amount_pk PRIMARY KEY(format_format_type, quantity),
     CONSTRAINT format_amount_fk FOREIGN KEY(format_format_type) references format(format_type)
 );

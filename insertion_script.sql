@@ -42,29 +42,30 @@ SELECT DISTINCT
 	DLIV_TOWN, DLIV_COUNTRY
 FROM fsdb.trolley
 WHERE DLIV_WAYNAME IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_ZIP IS NOT NULL AND DLIV_COUNTRY
-IS NOT NULL AND DLIV_TOWN IS NOT NULL;
+IS NOT NULL AND DLIV_TOWN IS NOT NULL AND (VALIDATE_CONVERSION(DLIV_FLOOR AS NUMBER) = 1);
 
 insert into purchase(
     units,
     customer_preferred_contact,
-    payment_type,
-    credit_card_cardnum,
+    payment_type, credit_card_cardnum,
     reference_price, format_format_type, reference_amount, reference_barcode,
     delivery_date,
     address_type, address_name, address_zip, address_country, address_town,
 	total_pay
 )
-SELECT DISTINCT quantity, coalesce(client_mobile, client_email), payment_type, card_number,
-to_number(BASE_PRICE), PACKAGING, to_number(QUANTITY), barcode,
-to_date(delivery_date), 
+SELECT DISTINCT quantity, 
+coalesce(client_mobile, client_email),
+payment_type, card_number,
+to_number(translate(translate(base_price, '_c', '_'), '_.', '_,')), PACKAGING, QUANTITY, barcode,
+to_date(DLIV_DATE, 'YYYY/MM/DD'), 
 DLIV_WAYTYPE, DLIV_WAYNAME, to_number(DLIV_ZIP), 
 DLIV_TOWN, DLIV_COUNTRY,
-(to_number(BASE_PRICE)*QUANTITY)
-
+(to_number(translate(translate(base_price, '_c', '_'), '_.', '_,'))*QUANTITY)
 FROM fsdb.trolley
-WHERE BASE_PRICE IS NOT NULL AND PACKAGING IS NOT NULL AND QUANTITY IS NOT NULL AND BARCODE IS NOT NULL AND  
-IS NOT NULL AND DLIV_WAYTYPE IS NOT NULL AND DLIV_WAYNAME IS NOT NULL AND DLIV_ZIP IS NOT NULL AND
-DLIV_TOWN IS NOT NULL AND DLIV_COUNTRY IS NOT NULL AND DLIV_DATE IS NOT NULL;
+WHERE BASE_PRICE IS NOT NULL AND PACKAGING IS NOT NULL AND QUANTITY IS NOT NULL AND BARCODE IS NOT NULL
+AND DLIV_WAYTYPE IS NOT NULL AND DLIV_WAYNAME IS NOT NULL AND DLIV_ZIP IS NOT NULL
+AND DLIV_TOWN IS NOT NULL AND DLIV_COUNTRY IS NOT NULL AND DLIV_DATE IS NOT NULL 
+AND coalesce(client_mobile, client_email) IS NOT NULL;
 
 
 insert into provider(

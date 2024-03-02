@@ -237,7 +237,7 @@ CREATE TABLE purchase
     address_town VARCHAR(45),
     units NUMBER(15) NOT NULL,
     total_pay NUMBER(15),
-    customer_preferred_contact VARCHAR(60) NOT NULL,
+    customer_preferred_contact VARCHAR(70) NOT NULL,
     payment_type VARCHAR(45) NOT NULL,
     credit_card_cardnum NUMBER(20),
     CONSTRAINT purchase_pk PRIMARY KEY(reference_price, reference_amount, reference_barcode, delivery_date, address_name, address_zip, address_country, address_town),

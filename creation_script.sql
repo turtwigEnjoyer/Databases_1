@@ -228,7 +228,7 @@ CREATE TABLE purchase
     reference_price NUMBER(15),
     format_format_type VARCHAR(45),
     reference_amount VARCHAR(45),
-    reference_barcode NUMBER(15),
+    reference_barcode VARCHAR(45),
     delivery_date DATE,
     address_type VARCHAR(45),
     address_name VARCHAR(45),
